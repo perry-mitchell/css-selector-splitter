@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/perry-mitchell/css-selector-splitter/issues"
   },
-  "homepage": "https://github.com/perry-mitchell/css-selector-splitter#readme"
+  "homepage": "https://github.com/perry-mitchell/css-selector-splitter#readme",
+  "devDependencies": {
+    "nodeunit": "^0.9.1"
+  }
 }
