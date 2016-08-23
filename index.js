@@ -14,6 +14,7 @@ function splitSelector(selector, splitCharacters = [","]) {
     let currentBraces = [],
         selectorLen = selector.length,
         selectors = [],
+        joiners = [],
         currentSelector = "",
         closingBraces = {};
     for (var i = 0; i < selectorLen; i += 1) {
@@ -44,11 +45,20 @@ function splitSelector(selector, splitCharacters = [","]) {
             currentSelector += char;
         } else if (splitCharacters.indexOf(char) >= 0) {
             if (currentBraces.length <= 0) {
-                // we're not inside another block, so we can split using the comma
-                selectors.push(currentSelector.trim());
-                currentSelector = "";
+                // we're not inside another block, so we can split using the comma/splitter
+                let lastJoiner = joiners[joiners.length - 1];
+                if (currentSelector.length <= 0 && lastJoiner === " ") {
+                    // we just split by a space, but there seems to be another split character, so use
+                    // this new one instead of the previous space
+                    joiners[joiners.length - 1] = char;
+                } else {
+                    // split by this character
+                    let newLength = selectors.push(currentSelector.trim());
+                    joiners[newLength - 1] = char;
+                    currentSelector = "";
+                }
             } else {
-                // we're inside another block, so ignore the comma
+                // we're inside another block, so ignore the comma/splitter
                 currentSelector += char;
             }
         } else {
@@ -57,13 +67,46 @@ function splitSelector(selector, splitCharacters = [","]) {
         }
     }
     selectors.push(currentSelector.trim());
-    return selectors.filter((cssSelector) => cssSelector.length > 0);
+    return {
+        selectors: selectors.filter((cssSelector) => cssSelector.length > 0),
+        joiners: joiners
+    };
+}
+
+// output:
+
+function extractSelectors(selector, splitChars) {
+    let split = splitSelector(selector, splitChars);
+    return split.selectors;
 }
 
 function extractSelectorBlocks(selector) {
     return splitSelector(selector, ["+", "~", ">", " "]);
 }
 
-splitSelector.extractBlocks = extractSelectorBlocks;
+function joinParts(selectors, joiners) {
+    let selector = "",
+        selectorCount = selectors.length;
+    selectors.forEach(function(part, index) {
+        let suffix = joiners[index];
+        if (!suffix) {
+            if ((selectorCount - 1) === index) {
+                suffix = "";
+            } else {
+                throw new Error(`No joiner for index: ${index}`);
+            }
+        } else {
+            if (suffix !== " ") {
+                suffix = ` ${suffix} `;
+            }
+        }
+        selector += part + suffix;
+    });
+    return selector;
+}
 
-module.exports = splitSelector;
+extractSelectors.splitSelectorBlocks = extractSelectorBlocks;
+
+extractSelectors.joinSelector = joinParts;
+
+module.exports = extractSelectors;
