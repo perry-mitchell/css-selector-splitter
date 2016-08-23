@@ -18,14 +18,30 @@ let selectors = splitSelector("div#gallery, div.slide"); // ["div#gallery", "div
 This library also supports the splitting of relationship blocks:
 
 ```
-const extractBlocks = require("css-selector-splitter").extractBlocks;
+const splitSelectorBlocks = require("css-selector-splitter").splitSelectorBlocks;
 
-let items = extractBlocks("div.level1 div#level2 > span.level3 ~ p");
+let items = splitSelectorBlocks("div.level1 div#level2 > span.level3 ~ p");
 // returns:
-// [
-//   "div.level1",
-//   "div#level2",
-//   "span.level3",
-//   "p"
-// ]
+// {
+//   selectors: [
+//     "div.level1",
+//     "div#level2",
+//     "span.level3",
+//     "p"
+//   ],
+//   joiners: [
+//     " ",
+//     ">",
+//     "~"
+//   ]
+// }
+```
+
+You can join selectors as well:
+
+```
+const joinSelector = require("css-selector-splitter").joinSelector;
+
+let selector = joinSelector(["div.a", "div.b"], [">"]); // this can also be output from 'splitSelectorBlocks'
+// returns: "div.a > div.b"
 ```
