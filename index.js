@@ -49,10 +49,12 @@ function splitSelector(selector, splitCharacters = [","]) {
             if (currentBraces.length <= 0) {
                 // we're not inside another block, so we can split using the comma/splitter
                 let lastJoiner = joiners[joiners.length - 1];
-                if (currentSelector.length <= 0 && lastJoiner === " ") {
+                if (lastJoiner === " " && currentSelector.length <= 0) {
                     // we just split by a space, but there seems to be another split character, so use
                     // this new one instead of the previous space
                     joiners[joiners.length - 1] = char;
+                } else if (currentSelector.length <= 0) {
+                    // skip this character, as it's just padding
                 } else {
                     // split by this character
                     let newLength = selectors.push(currentSelector.trim());
