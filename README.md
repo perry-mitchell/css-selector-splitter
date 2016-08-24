@@ -6,6 +6,10 @@ Split CSS selectors by commas or blocks
 ## Compatibility
 Node v6 is supported (full ES6).
 
+## Why make this?
+_Are their other splitting libraries? Do they do the same thing as yours?_
+Yes and somewhat. This library allows for splitting of relationship blocks too: "div > a ~ p". Other libraries that I've tested also don't cater for text within attribute values, so [splitting fails](https://github.com/joakimbeng/split-css-selector/issues/1) if certain characters are encountered within these fields.
+
 ## Usage
 Simply require the main function:
 
