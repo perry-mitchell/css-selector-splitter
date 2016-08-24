@@ -1,6 +1,6 @@
 {
   "name": "css-selector-splitter",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Split CSS selectors by comma or relationship block",
   "main": "index.js",
   "scripts": {
